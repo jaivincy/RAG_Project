@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Basics Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+                .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .quiz-content {
+            padding: 40px;
+        }
+        
+        .question {
+            display: none;
+            margin-bottom: 30px;
+        }
+        
+        .question.active {
+            display: block;
+        }
+        
+        .question h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            background: #f8f9fa;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #e8f0ff;
+        }
+        
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .score-excellent {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .score-good {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        
+        .score-poor {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Python Basics Quiz</h1>
+            <p>Test your knowledge of Python fundamentals</p>
+        </div>
+        
+        <div class="quiz-content" id="quizContent">
+            <div class="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Question 1 of 10</p>
+            </div>
+            
+            <div class="score-display" id="scoreDisplay" style="display: none;">
+                Score: <span id="currentScore">0</span>/10
+            </div>
+            
+            <div id="questions">
+                <!-- Question 1 -->
+                <div class="question active" data-question="1">
+                    <h3>1. What is the correct way to create a variable in Python?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) var x = 5</div>
+                        <div class="option" data-option="B">B) x = 5</div>
+                        <div class="option" data-option="C">C) let x = 5</div>
+                        <div class="option" data-option="D">D) const x = 5</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: B</strong><br>
+                        In Python, you simply use the assignment operator (=) to create variables. No keywords like 'var', 'let', or 'const' are needed.
+                    </div>
+                </div>
+                
+                <!-- Question 2 -->
+                <div class="question" data-question="2">
+                    <h3>2. Which of the following is NOT a valid Python data type?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) list</div>
+                        <div class="option" data-option="B">B) tuple</div>
+                        <div class="option" data-option="C">C) array</div>
+                        <div class="option" data-option="D">D) dictionary</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: C</strong><br>
+                        Python doesn't have a built-in 'array' type. It uses 'list' instead. While you can import arrays from the 'array' module, it's not a built-in data type.
+                    </div>
+                </div>
+                
+                <!-- Question 3 -->
+                <div class="question" data-question="3">
+                    <h3>3. What will be the output of: print(type([]))</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) &lt;class 'array'&gt;</div>
+                        <div class="option" data-option="B">B) &lt;class 'list'&gt;</div>
+                        <div class="option" data-option="C">C) &lt;class 'tuple'&gt;</div>
+                        <div class="option" data-option="D">D) &lt;class 'set'&gt;</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: B</strong><br>
+                        The empty square brackets [] create an empty list in Python, so type([]) returns &lt;class 'list'&gt;.
+                    </div>
+                </div>
+                
+                <!-- Question 4 -->
+                <div class="question" data-question="4">
+                    <h3>4. Which method is used to add an element to the end of a list?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) append()</div>
+                        <div class="option" data-option="B">B) add()</div>
+                        <div class="option" data-option="C">C) insert()</div>
+                        <div class="option" data-option="D">D) push()</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: A</strong><br>
+                        The append() method adds an element to the end of a list. insert() adds at a specific position, while add() and push() are not list methods.
+                    </div>
+                </div>
+                
+                <!-- Question 5 -->
+                <div class="question" data-question="5">
+                    <h3>5. What is the correct syntax for a function definition in Python?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) function myFunction():</div>
+                        <div class="option" data-option="B">B) def myFunction():</div>
+                        <div class="option" data-option="C">C) func myFunction():</div>
+                        <div class="option" data-option="D">D) define myFunction():</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: B</strong><br>
+                        In Python, functions are defined using the 'def' keyword followed by the function name and parentheses.
+                    </div>
+                </div>
+                
+                <!-- Question 6 -->
+                <div class="question" data-question="6">
+                    <h3>6. What will be the output of: print(3 * "Hello")</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) HelloHelloHello</div>
+                        <div class="option" data-option="B">B) 3Hello</div>
+                        <div class="option" data-option="C">C) Error</div>
+                        <div class="option" data-option="D">D) Hello 3</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: A</strong><br>
+                        Multiplying a string by an integer repeats the string that many times, so 3 * "Hello" results in "HelloHelloHello".
+                    </div>
+                </div>
+                
+                <!-- Question 7 -->
+                <div class="question" data-question="7">
+                    <h3>7. Which of the following is used for comments in Python?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) //</div>
+                        <div class="option" data-option="B">B) /* */</div>
+                        <div class="option" data-option="C">C) #</div>
+                        <div class="option" data-option="D">D) --</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: C</strong><br>
+                        Python uses the hash symbol (#) for single-line comments. Multi-line comments can be written using triple quotes (''' or """).
+                    </div>
+                </div>
+                
+                <!-- Question 8 -->
+                <div class="question" data-question="8">
+                    <h3>8. What is the result of: len([1, 2, 3, 4, 5])</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) 4</div>
+                        <div class="option" data-option="B">B) 5</div>
+                        <div class="option" data-option="C">C) 6</div>
+                        <div class="option" data-option="D">D) Error</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: B</strong><br>
+                        The len() function returns the number of items in a sequence. The list [1, 2, 3, 4, 5] has 5 elements.
+                    </div>
+                </div>
+                
+                <!-- Question 9 -->
+                <div class="question" data-question="9">
+                    <h3>9. Which operator is used for exponentiation in Python?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) ^</div>
+                        <div class="option" data-option="B">B) **</div>
+                        <div class="option" data-option="C">C) pow()</div>
+                        <div class="option" data-option="D">D) exp()</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: B</strong><br>
+                        The double asterisk (**) is the exponentiation operator in Python. For example, 2**3 equals 8.
+                    </div>
+                </div>
+                
+                <!-- Question 10 -->
+                <div class="question" data-question="10">
+                    <h3>10. What is the correct way to check if a key exists in a dictionary?</h3>
+                    <div class="options">
+                        <div class="option" data-option="A">A) if key in dict:</div>
+                        <div class="option" data-option="B">B) if dict.hasKey(key):</div>
+                        <div class="option" data-option="C">C) if dict.contains(key):</div>
+                        <div class="option" data-option="D">D) if dict.keyExists(key):</div>
+                    </div>
+                    <div class="explanation">
+                        <strong>Correct Answer: A</strong><br>
+                        The 'in' operator is the Pythonic way to check if a key exists in a dictionary. The other methods don't exist in Python.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>Previous</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+        
+        <div class="results" id="results" style="display: none;">
+            <h2>Quiz Complete!</h2>
+            <div class="score-circle" id="scoreCircle">
+                <span id="finalScore">0</span>/10
+            </div>
+            <h3 id="scoreMessage">Great job!</h3>
+            <button class="btn btn-primary" onclick="restartQuiz()">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let score = 0;
+        let answers = {};
+        const totalQuestions = 10;
+        
+        const correctAnswers = {
+            1: 'B',
+            2: 'C',
+            3: 'B',
+            4: 'A',
+            5: 'B',
+            6: 'A',
+            7: 'C',
+            8: 'B',
+            9: 'B',
+            10: 'A'
+        };
+        
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const percentage = (currentQuestion / totalQuestions) * 100;
+            
+            progressFill.style.width = percentage + '%';
+            progressText.textContent = `Question ${currentQuestion} of ${totalQuestions}`;
+        }
+        
+        function showQuestion(questionNum) {
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+            document.querySelector(`[data-question="${questionNum}"]`).classList.add('active');
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = questionNum === 1;
+            document.getElementById('nextBtn').textContent = questionNum === totalQuestions ? 'Finish' : 'Next';
+            
+            updateProgress();
+        }
+        
+        function selectOption(optionElement) {
+            const question = optionElement.closest('.question');
+            const questionNum = parseInt(question.dataset.question);
+            
+            // Remove previous selections
+            question.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            optionElement.classList.add('selected');
+            
+            // Store answer
+            answers[questionNum] = optionElement.dataset.option;
+            
+            // Show explanation if available
+            const explanation = question.querySelector('.explanation');
+            if (explanation) {
+                explanation.classList.add('show');
+            }
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                finishQuiz();
+            }
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+        
+        function finishQuiz() {
+            // Calculate score
+            score = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (answers[i] === correctAnswers[i]) {
+                    score++;
+                }
+            }
+            
+            // Show results
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            
+            const finalScoreElement = document.getElementById('finalScore');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            finalScoreElement.textContent = score;
+            
+            // Set score circle class and message
+            if (score >= 8) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreMessage.textContent = 'Excellent! You have a strong grasp of Python basics!';
+            } else if (score >= 6) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreMessage.textContent = 'Good job! You understand most Python fundamentals.';
+            } else {
+                scoreCircle.className = 'score-circle score-poor';
+                scoreMessage.textContent = 'Keep practicing! Review the basics and try again.';
+            }
+        }
+        
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            answers = {};
+            
+            // Reset all selections and explanations
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Show quiz content again
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('quizContent').style.display = 'block';
+            
+            showQuestion(1);
+        }
+        
+        // Add event listeners to options
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectOption(this);
+                });
+            });
+            
+            updateProgress();
+        });
+    </script>
+</body>
+</html> 
